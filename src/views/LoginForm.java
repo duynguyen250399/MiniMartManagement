@@ -89,9 +89,8 @@ public class LoginForm extends javax.swing.JFrame {
         jLabel4.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
         jLabel4.setText("Password");
 
-        btnLogin.setBackground(new java.awt.Color(128, 124, 113));
+        btnLogin.setBackground(new java.awt.Color(255, 255, 255));
         btnLogin.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
-        btnLogin.setForeground(new java.awt.Color(255, 255, 255));
         btnLogin.setText("Login");
         btnLogin.setBorder(null);
         btnLogin.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));

@@ -43,9 +43,11 @@ public class LoginController {
       
         if(role.equals("admin")){
             this.dashboard = new AdminDashboard();
+            loginForm.dispose();
         }
         else if(role.equals("user")){
             this.dashboard = new UserDashboard();
+            loginForm.dispose();
         }
         else{
             JOptionPane.showMessageDialog(this.loginForm, "Invalid username or password!");
@@ -59,6 +61,7 @@ public class LoginController {
         public void actionPerformed(ActionEvent ae) {
             try {
                 login();
+                
             } catch (ClassNotFoundException ex) {
                 Logger.getLogger(LoginController.class.getName()).log(Level.SEVERE, null, ex);
             } catch (SQLException ex) {

@@ -17,6 +17,7 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 
@@ -162,6 +163,8 @@ public class AdminDashboard extends javax.swing.JFrame {
         cbRole = new javax.swing.JComboBox<>();
         btnEdit = new javax.swing.JButton();
         btnSave = new javax.swing.JButton();
+        btnNewStaff = new javax.swing.JButton();
+        btnRemoveStaff = new javax.swing.JButton();
         productPanel = new javax.swing.JPanel();
         categoryPanel = new javax.swing.JPanel();
         jMenuBar1 = new javax.swing.JMenuBar();
@@ -172,6 +175,8 @@ public class AdminDashboard extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
+
+        userPanel.setBackground(new java.awt.Color(255, 255, 255));
 
         staffTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -343,19 +348,39 @@ public class AdminDashboard extends javax.swing.JFrame {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(cbRole))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 29, Short.MAX_VALUE)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnEdit)
                     .addComponent(btnSave))
                 .addGap(24, 24, 24))
         );
 
+        btnNewStaff.setText("New Staff");
+        btnNewStaff.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnNewStaffActionPerformed(evt);
+            }
+        });
+
+        btnRemoveStaff.setText("Remove Staff");
+        btnRemoveStaff.setEnabled(false);
+        btnRemoveStaff.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRemoveStaffActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout userPanelLayout = new javax.swing.GroupLayout(userPanel);
         userPanel.setLayout(userPanelLayout);
         userPanelLayout.setHorizontalGroup(
             userPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(userPanelLayout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 671, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(userPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 671, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(userPanelLayout.createSequentialGroup()
+                        .addComponent(btnNewStaff, javax.swing.GroupLayout.PREFERRED_SIZE, 323, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnRemoveStaff, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGap(4, 4, 4))
@@ -363,10 +388,15 @@ public class AdminDashboard extends javax.swing.JFrame {
         userPanelLayout.setVerticalGroup(
             userPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(userPanelLayout.createSequentialGroup()
-                .addGroup(userPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jScrollPane1)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 2, Short.MAX_VALUE))
+            .addGroup(userPanelLayout.createSequentialGroup()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(userPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnNewStaff, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnRemoveStaff, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(22, 22, 22))
         );
 
         mainPanel.addTab("Users", userPanel);
@@ -486,7 +516,8 @@ public class AdminDashboard extends javax.swing.JFrame {
         Date birthdate = new Date(date.getTime());
         String phone = this.txtStaffPhone.getText();
         String roleStr = (String) this.cbRole.getSelectedItem();
-        int role = (roleStr.equalsIgnoreCase("admin")) ? 0 : 1;
+        System.out.println(roleStr);
+        int role = (roleStr.equalsIgnoreCase("admin")) ? 1 : 0;
 
         UserDTO dto = new UserDTO(id, username, password, fullName, email, addr, phone, birthdate, role);
 
@@ -520,9 +551,33 @@ public class AdminDashboard extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnSaveActionPerformed
 
+    public JTable getStaffTable() {
+        return staffTable;
+    }
+
+    public Vector getStaffData() {
+        return staffData;
+    }
+
+    public List<UserDTO> getStaffs() {
+        return staffs;
+    }
+
+    
+    
+    private void btnNewStaffActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewStaffActionPerformed
+        StaffRegistration registrationForm = new StaffRegistration(this);
+    }//GEN-LAST:event_btnNewStaffActionPerformed
+
+    private void btnRemoveStaffActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveStaffActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnRemoveStaffActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnEdit;
+    private javax.swing.JButton btnNewStaff;
+    private javax.swing.JButton btnRemoveStaff;
     private javax.swing.JButton btnSave;
     private javax.swing.JPanel categoryPanel;
     private javax.swing.JComboBox<String> cbRole;
