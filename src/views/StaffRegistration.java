@@ -5,17 +5,32 @@
  */
 package views;
 
+import dao.user.UserDAO;
+import java.util.Random;
+import javax.swing.JOptionPane;
+import org.jdatepicker.JDatePanel;
+import org.jdatepicker.JDatePicker;
+import org.jdatepicker.impl.JDatePanelImpl;
+import org.jdatepicker.impl.JDatePickerImpl;
+import util.UIUtils;
+
 /**
  *
  * @author Admin
  */
 public class StaffRegistration extends javax.swing.JFrame {
 
-    /**
-     * Creates new form StaffRegistration
-     */
-    public StaffRegistration() {
+    private AdminDashboard dashboard;
+
+    public StaffRegistration(AdminDashboard dashboard) {
         initComponents();
+        this.dashboard = dashboard;
+        setTitle("Staff Registration");
+        setResizable(false);
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        setLocationRelativeTo(this.dashboard);
+
+        setVisible(true);
     }
 
     /**
@@ -85,6 +100,11 @@ public class StaffRegistration extends javax.swing.JFrame {
         jLabel8.setText("Birthdate");
 
         txtBirthdate.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
+        txtBirthdate.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                txtBirthdateMousePressed(evt);
+            }
+        });
 
         txtPhone.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
 
@@ -93,6 +113,11 @@ public class StaffRegistration extends javax.swing.JFrame {
 
         btnFinish.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
         btnFinish.setText("Finish");
+        btnFinish.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnFinishActionPerformed(evt);
+            }
+        });
 
         txtPassword.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
 
@@ -192,39 +217,84 @@ public class StaffRegistration extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(StaffRegistration.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(StaffRegistration.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(StaffRegistration.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(StaffRegistration.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+    private void btnFinishActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFinishActionPerformed
+        String username = this.txtUsername.getText().trim();
+        String password = String.valueOf(this.txtPassword.getPassword());
+        String confirm = this.txtConfirm.getText().trim();
+        String fullName = this.txtFullName.getText().trim();
+        String email = this.txtEmail.getText().trim();
+        String addr = this.txtAddr.getText().trim();
+        String phone = this.txtPhone.getText().trim();
+        
+        boolean isValid = isValidForm(username, password, confirm, fullName, email, addr, phone);
+        
+        if(isValid){          
+            UserDAO dao = new UserDAO();
+            
+            //boolean result = dao.addNewUser(dto);
         }
-        //</editor-fold>
+    }//GEN-LAST:event_btnFinishActionPerformed
 
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new StaffRegistration().setVisible(true);
-            }
-        });
+    private void txtBirthdateMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtBirthdateMousePressed
+        JDatePickerImpl datePicker = UIUtils.showDatePicker();
+        this.add(datePicker);
+        datePicker.setVisible(true);
+    }//GEN-LAST:event_txtBirthdateMousePressed
+
+    private String generateStaffID(){
+        String id = "STF";
+        
+        Random random = new Random();
+        int min = 1000000;
+        int max = 9999999;
+        int dif = max - min;
+        int secretNum = random.nextInt(dif) + min;
+        id = id + secretNum;
+        
+        return id;
+    }
+    
+    private boolean isValidForm(String username, String password, String confirm, String fullName, String email, String addr, String phone) {
+        String usernamePattern = "^[a-z]\\w{6,15}$";
+        String passwordPattern = "^[A-Z]\\w{6,15}$";
+        String fullNamePattern = "[a-zA-Z ]+";
+        String emailPattern = "^[a-z]\\w+[@]\\w+[.]\\w+$";
+        String phonePattern = "[0-9]{10}";
+
+        if (!username.matches(usernamePattern)) {
+            JOptionPane.showMessageDialog(this, "Invalid username!");
+            return false;
+        }
+        if (!password.matches(passwordPattern)) {
+            JOptionPane.showMessageDialog(this, "Invalid password!");
+            return false;
+        }
+        if (!password.equals(confirm)) {
+            JOptionPane.showMessageDialog(this, "Confirm does not match!");
+            return false;
+        }
+        if (!fullName.matches(fullNamePattern)) {
+            JOptionPane.showMessageDialog(this, "Invalid name!");
+            return false;
+        }
+        if (!email.matches(emailPattern)) {
+            JOptionPane.showMessageDialog(this, "Invalid email!");
+            return false;
+        }
+        if (addr.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Address required!");
+            return false;
+        }
+         if(!phone.matches(phonePattern)){
+            JOptionPane.showMessageDialog(this, "Invalid phone number!");
+            return false;
+        }
+         
+         return true;
+    }
+    
+    public static void main(String[] args) {
+        new StaffRegistration(null);
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
